@@ -1,5 +1,3 @@
-import edu.princeton.cs.algs4.StdRandom;
-import edu.princeton.cs.algs4.StdStats;
 import edu.princeton.cs.algs4.WeightedQuickUnionUF;
 
 public class Percolation {
@@ -10,6 +8,7 @@ public class Percolation {
 		int state;
 		int x;
 		int y;
+		int id;
 //		public Square() { //blocked by default
 //			this.state = -1;
 //		}
@@ -17,6 +16,10 @@ public class Percolation {
 			this.state = state;
 			this.x = x;
 			this.y = y;
+			this.id = (n * y) + (x+1); // starts in 0
+		}
+		public int getId() {
+			return this.id;
 		}
 		public int getState() {
 			return this.state;
@@ -53,8 +56,9 @@ public class Percolation {
     		}
     	}
     }
+    
     //method to print
-    private void printGrid() {
+    void printGrid() {
     	for(int i=0; i < grid.length; i++) {
     		for(int j=0; j<grid[i].length; j++) {
     			System.out.print(" "+grid[i][j].getState());
@@ -108,16 +112,16 @@ public class Percolation {
 	    			//getRight
 	    			if(j+1<grid[i].length) {
 		    			if(grid[i][j+1].isOpenBlock()) {
-		    				int p = this.n*(grid[i][0].getY())+j;
-		    				int q = this.n*(grid[i][0].getY())+j+1;
+		    				int p = grid[i][j].getId();
+		    				int q = grid[i][j].getId()+1;
 		    				WQUFrep.union(p, q); //Revisar
 		    			}
 	    			}
 	    			//getDown
 	    			if(i+1<grid.length) {
 		    			if(grid[i+1][j].isOpenBlock()) {
-		    				int p= this.n*(grid[i][0].getY())+i;
-		    				int q=this.n*(grid[i+1][0].getY())+i+1;
+		    				int p= this.n*(grid[i][0].getY())+j+1;
+		    				int q=this.n*(grid[i+1][0].getY())+j+1;
 		    				WQUFrep.union(p, q);
 		    			}
 	    			}
@@ -140,23 +144,22 @@ public class Percolation {
 
     // test client (optional)
     public static void main(String[] args) {
-    	Percolation perc = new Percolation(4);
+    	Percolation perc = new Percolation(3000);
     	
-    	//open some TEST
+    	//open some TEST 3*3
     	perc.open(0, 0);
-    	perc.open(0, 2);
-    	
-//    	perc.open(1, 0);
-    	perc.open(1, 1);
+    	perc.open(0, 1);
+    	perc.open(1, 0);
     	perc.open(1, 2);
     	perc.open(2, 1);
-//    	perc.open(2, 2);
+    	perc.open(2, 2);
     	
-    	perc.open(3, 0);
-    	perc.open(3, 2);
-    	perc.open(3, 1);
+    	//open some TEST 2*2
+//    	perc.open(0, 0);
+//    	perc.open(1, 1);
+
     	
-    	perc.printGrid();
+    	//perc.printGrid();
     	System.out.println();
     	System.out.println(perc.numberOfOpenSites());
     	System.out.println(perc.percolates());
