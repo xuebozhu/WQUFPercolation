@@ -1,6 +1,7 @@
 //TMP
 //import java.util.concurrent.TimeUnit;
 
+
 import edu.princeton.cs.algs4.StdRandom;
 import edu.princeton.cs.algs4.StdStats;
 
@@ -8,12 +9,13 @@ import edu.princeton.cs.algs4.StdStats;
 
 public class PercolationStats {
 	double[] trialsArray;
+	int N;
 
     // perform independent trials on an n-by-n grid
     public PercolationStats(int n, int trials) {
     	Percolation perc = new Percolation(n);
     	
-    	int N = n*n;
+    	this.N = n*n;
     	
 		trialsArray = new double[trials];
     	//By number of trials
@@ -21,17 +23,17 @@ public class PercolationStats {
     		
     		int totalOpen = 0;
     		double result=0;
-	    	int increment = 1;
 	    	
 	    	perc = new Percolation(n);
 	    	
-	    	while(increment <= N && !perc.percolates()) {
-	    		int iSquareRand = StdRandom.uniform(0, n);
-	    		int jSquareRand = StdRandom.uniform(0, n);
-	    		while(perc.isOpen(iSquareRand, jSquareRand)) { //*OPTIONAL: Registro de posiciones a no Calcular
-	    			iSquareRand= StdRandom.uniform(0, n);
-	    			jSquareRand= StdRandom.uniform(0, n);
-	    			//TRAZA
+
+    		//random not repetitive number
+    		int[] arr = new int[this.N];
+    	    for (int x = 0; x < arr.length; x++) {
+    	        arr[x] = x;
+    	    }
+    	    StdRandom.shuffle(arr);
+    			//TRAZA
 //	    			try {
 //						TimeUnit.SECONDS.sleep(0);
 //						System.out.println("CALCULANDO");
@@ -41,20 +43,22 @@ public class PercolationStats {
 //						// TODO Auto-generated catch block
 //						e.printStackTrace();
 //					}
-	    			
-	    		}
-	    		perc.open(iSquareRand, jSquareRand);
-	    		increment++;
-	    		//TRAZA
+    	    int x = 0;
+	    	while(!perc.percolates() && x<arr.length) { 
+    	    	int iSquareRand = arr[x] / n;
+    			int jSquareRand = arr[x] % n;	
+    			perc.open(iSquareRand, jSquareRand);
+    			x++;
+    	    }
+    		//TRAZA
 //	    		perc.printGrid();
-	    		totalOpen = perc.numberOfOpenSites();
+    		totalOpen = perc.numberOfOpenSites();
 //	    		System.out.println("Total open: "+ totalOpen);
 //	    		System.out.println("Percolates(true/false): "+perc.percolates());
-	    	}
-	    	
+    	
+    	
 //	    	System.out.println("FINAL Total open: "+ totalOpen);
 	    	result = (double)totalOpen/N;
-	    	increment =0;
 //	    	System.out.println("RESULT P: " + result);
 	    	trialsArray[i] = result;
     	}
@@ -72,24 +76,37 @@ public class PercolationStats {
     }
 
     // low endpoint of 95% confidence interval
-//    public double confidenceLo() {
-//    	
-//    }
+    public double confidenceLo() {
+    	double mean = this.mean();
+	    // calculate standard deviation
+	    double standardDeviation = this.stddev();
+	    // value for 95% confidence interval, source: https://en.wikipedia.org/wiki/Confidence_interval#Basic_Steps
+	    double confidenceLevel = 1.96;
+	    double temp = confidenceLevel * standardDeviation / Math.sqrt(this.trialsArray.length);
+	    return mean - temp;
+    }
 
     // high endpoint of 95% confidence interval
-//    public double confidenceHi() {
-//    	
-//    }
+    public double confidenceHi() {
+    	double mean = this.mean();
+	    // calculate standard deviation
+	    double standardDeviation = this.stddev();
+	    // value for 95% confidence interval, source: https://en.wikipedia.org/wiki/Confidence_interval#Basic_Steps
+	    double confidenceLevel = 1.96;
+	    double temp = confidenceLevel * standardDeviation / Math.sqrt(this.trialsArray.length);
+    	return mean + temp;
+    }
 
    // test client (see below)
    public static void main(String[] args) {
 	   //TEST uniform distribution
-	   PercolationStats percStats = new PercolationStats(2,10000);
+	   PercolationStats percStats = new PercolationStats(100,100);
 	   double media = percStats.mean();
 	   double dev = percStats.stddev();
 	   System.out.println("------------------------");
 	   System.out.println("Media: "+media);
 	   System.out.println("Desv. Std: "+dev);
+	   System.out.println("95% confidence interval = ["+percStats.confidenceLo()+", "+percStats.confidenceHi()+"]");
    }
 
 }
