@@ -13,7 +13,6 @@ public class PercolationStats {
 
     // perform independent trials on an n-by-n grid
     public PercolationStats(int n, int trials) {
-    	Percolation perc;
     	
     	this.N = n*n;
     	
@@ -31,20 +30,20 @@ public class PercolationStats {
     		int totalOpen = 0;
     		double result=0;
 	    	
-	    	perc = new Percolation(n);
+	    	Percolation perc = new Percolation(n);
 
     	    StdRandom.shuffle(arr);
 
     	    boolean isPercolates = false;
     	    int x = 0;
-	    	while(!isPercolates && x<arr.length) { 
+	    	while(isPercolates==false && x<arr.length) { 
     	    	int iSquareRand = arr[x] / n;
     			int jSquareRand = arr[x] % n;	
     			perc.open(iSquareRand, jSquareRand);
     			
     			//TRAZA
     			try {
-					TimeUnit.MILLISECONDS.sleep(500);
+					TimeUnit.MILLISECONDS.sleep(1000);
 				} catch (InterruptedException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();

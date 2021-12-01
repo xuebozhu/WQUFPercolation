@@ -45,10 +45,13 @@ public class Percolation {
 	
 	Square[][] grid;
 	int n;
+	int N;
+	WeightedQuickUnionUF WQUFrep; 
 	
 	//*****Here STARTS****************
 	// creates n-by-n grid, with all sites initially blocked
     public Percolation(int n) {
+    	//Grid Creation
     	this.n = n;
     	grid= new Square[n][n];
     	for(int i=0; i < grid.length; i++) {
@@ -56,6 +59,13 @@ public class Percolation {
     			grid[i][j] = new Square(-1, j, i);
     		}
     	}
+    	
+    	//Graph Creation
+    	this.N = (this.n * this.n) + 2; //0 ->top , 17->bottom
+    	WQUFrep = new WeightedQuickUnionUF(N);
+
+    	//Illegal arguments j-1>=0 and i+1<grid.lenght
+    	
     }
     
     //method to print
@@ -70,7 +80,52 @@ public class Percolation {
 
     // opens the site (row, col) if it is not open already
     public void open(int row, int col) {
-    	grid[row][col].openBlock();
+    	//TOP
+    	if(row == 0) {
+    		WQUFrep.union(0, grid[row][col].getId());
+    	}
+    	//MID
+    	if(row>0 && row<grid.length) {
+    		//getLeft
+    		if(col-1>=0) { //Illegal argument left
+	    		if(grid[row][col-1].isOpenBlock()) {
+	    			int p = grid[row][col-1].getId();
+    				int q = grid[row][col].getId();
+    				WQUFrep.union(p, q); //Revisar
+	    		}
+    		}
+    		//getRight
+    		if(col+1<grid[row].length-1) { //Illegal argument right
+    			if(grid[row][col+1].isOpenBlock()) {
+    				int p = grid[row][col+1].getId();
+    				int q = grid[row][col].getId();
+    				WQUFrep.union(p, q); //Revisar
+    			}
+    		}
+    		//getUP
+    		if(row-1>=0) { //Illegal argument up
+    			if(grid[row-1][col].isOpenBlock()) {
+    				int p = grid[row-1][col].getId();
+    				int q = grid[row][col].getId();
+    				WQUFrep.union(p, q); //Revisar
+    			}
+    		}
+    		//getDOWn
+    		if(row+1<grid.length-1) { //Illegal argument down
+    			if(grid[row+1][col].isOpenBlock()) {
+    				int p = grid[row+1][col].getId();
+    				int q = grid[row][col].getId();
+    				WQUFrep.union(p, q); //Revisar
+    			}
+    		}
+    	}
+    	//BOT
+    	if(row==grid.length-1) {
+    		WQUFrep.union(N-1, grid[row][col].getId());
+    	}
+    	//^^^^OPEN
+		grid[row][col].openBlock();
+		
     }
 
     // is the site (row, col) open?
@@ -96,60 +151,9 @@ public class Percolation {
 
     // does the system percolate?
 	public boolean percolates() {
-    	int N = (this.n * this.n) + 2; //0 ->top , 17->bottom
-    	WeightedQuickUnionUF WQUFrep = new WeightedQuickUnionUF(N);
-    	
-    	boolean isPercolated = false;
-    	//check top row
-    	for(int i=0; i<grid[0].length; i++) {
-    		if(grid[0][i].isOpenBlock()) {
-    			int q = grid[0][i].getId();
-    			WQUFrep.union(0, q);
-    			grid[0][i].fill();
-    			isPercolated = true;
-    		}
-    	}
-    	if(isPercolated) {
-	    	//check bottom row
-	    	int lastRowStart = grid[grid.length-1][0].getId();
-	    	for(int i=0; i<grid[grid.length-1].length; i++) {
-	    		if(grid[grid.length-1][i].isOpenBlock()) {
-	    			WQUFrep.union(N-1, lastRowStart+i);
-	    		}
-	    	}
-	    	
-	    	//CHECKING UNIONS INSIDE
-	    	for(int i=1; i < grid.length; i++) {
-	    		for(int j=0; j<grid[i].length; j++) {
-	    			if(grid[i][j].isOpenBlock()) {
-	    				//getUP
-	    				if(grid[i-1][j].isFullBlock()) {
-			    			int p = grid[i-1][j].getId();
-			    			int q = grid[i][j].getId();
-			    			WQUFrep.union(p, q); //Revisar
-			    			grid[i][j].fill();
-		    			}
-		    			//getLeft
-		    			if(j-1>=0) {
-			    			if(grid[i][j-1].isFullBlock()) {
-			    				int p = grid[i][j-1].getId();
-			    				int q = grid[i][j].getId();
-			    				WQUFrep.union(p, q); //Revisar
-			    				grid[i][j].fill();
-			    			}
-		    			}
-	    			}
-	    		}
-	    	}
-    	}
-    	isPercolated = WQUFrep.find(0) == WQUFrep.find(N-1);	
-	
     	//TRAZA
     	//System.out.println("count(Graph): "+WQUFrep.count());
-    	return isPercolated;
-	    
-    	
-    	
+    	return WQUFrep.find(0) == WQUFrep.find(N-1);
     }
 
     // test client (optional)
@@ -175,10 +179,12 @@ public class Percolation {
     	
     	//open some TEST 3*3
     	perc.open(0, 0);
+    	perc.open(0, 1);
+    	perc.open(0, 2);
     	perc.open(1, 0);
     	perc.open(1, 1);
     	perc.open(1, 2);
-    	perc.open(2, 0);
+//    	perc.open(2, 0);
     	perc.open(2, 2);
     	
     	//open some TEST 2*2
