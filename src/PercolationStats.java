@@ -100,7 +100,7 @@ public class PercolationStats {
    // test client (see below)
    public static void main(String[] args) {
 	   //TEST uniform distribution
-	   PercolationStats percStats = new PercolationStats(100,100);
+	   PercolationStats percStats = new PercolationStats(2,100000);
 	   double media = percStats.mean();
 	   double dev = percStats.stddev();
 	   System.out.println("------------------------");
