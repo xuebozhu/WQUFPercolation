@@ -9,9 +9,7 @@ public class Percolation {
 		int x;
 		int y;
 		int id;
-//		public Square() { //blocked by default
-//			this.state = -1;
-//		}
+		
 		public Square(int state, int x, int y) {
 			this.state = state;
 			this.x = x;
@@ -23,6 +21,9 @@ public class Percolation {
 		}
 		public int getState() {
 			return this.state;
+		}
+		void fill() {
+			this.state = 1;
 		}
 		int getX() {
 			return this.x;
@@ -87,7 +88,7 @@ public class Percolation {
     	int nOpen=0;
     	for(int i=0; i < grid.length; i++) {
     		for(int j=0; j<grid[i].length; j++) {
-    			if(grid[i][j].isOpenBlock()) nOpen++;
+    			if(grid[i][j].isOpenBlock() || grid[i][j].isFullBlock()) nOpen++;
     		}
     	}
     	return nOpen;
@@ -98,71 +99,100 @@ public class Percolation {
     	int N = (this.n * this.n) + 2; //0 ->top , 17->bottom
     	WeightedQuickUnionUF WQUFrep = new WeightedQuickUnionUF(N);
     	
+    	boolean isPercolated = false;
     	//check top row
     	for(int i=0; i<grid[0].length; i++) {
     		if(grid[0][i].isOpenBlock()) {
-    			WQUFrep.union(0, grid[0][i].getX()+1);
+    			int q = grid[0][i].getId();
+    			WQUFrep.union(0, q);
+    			grid[0][i].fill();
+    			isPercolated = true;
     		}
     	}
-    	
-    	//CHECKING UNIONS INSIDE
-    	for(int i=0; i < grid.length; i++) {
-    		for(int j=0; j<grid[i].length; j++) {
-    			if(grid[i][j].isOpenBlock()) {
-	    			//getRight
-	    			if(j+1<grid[i].length) {
-		    			if(grid[i][j+1].isOpenBlock()) {
-		    				int p = grid[i][j].getId();
-		    				int q = grid[i][j].getId()+1;
-		    				WQUFrep.union(p, q); //Revisar
+    	if(isPercolated) {
+	    	//check bottom row
+	    	int lastRowStart = grid[grid.length-1][0].getId();
+	    	for(int i=0; i<grid[grid.length-1].length; i++) {
+	    		if(grid[grid.length-1][i].isOpenBlock()) {
+	    			WQUFrep.union(N-1, lastRowStart+i);
+	    		}
+	    	}
+	    	
+	    	//CHECKING UNIONS INSIDE
+	    	for(int i=1; i < grid.length; i++) {
+	    		for(int j=0; j<grid[i].length; j++) {
+	    			if(grid[i][j].isOpenBlock()) {
+	    				//getUP
+	    				if(grid[i-1][j].isFullBlock()) {
+			    			int p = grid[i-1][j].getId();
+			    			int q = grid[i][j].getId();
+			    			WQUFrep.union(p, q); //Revisar
+			    			grid[i][j].fill();
+		    			}
+		    			//getLeft
+		    			if(j-1>=0) {
+			    			if(grid[i][j-1].isFullBlock()) {
+			    				int p = grid[i][j-1].getId();
+			    				int q = grid[i][j].getId();
+			    				WQUFrep.union(p, q); //Revisar
+			    				grid[i][j].fill();
+			    			}
 		    			}
 	    			}
-	    			//getDown
-	    			if(i+1<grid.length) {
-		    			if(grid[i+1][j].isOpenBlock()) {
-		    				int p= this.n*(grid[i][0].getY())+j+1;
-		    				int q=this.n*(grid[i+1][0].getY())+j+1;
-		    				WQUFrep.union(p, q);
-		    			}
-	    			}
-    			}
-    		}
+	    		}
+	    	}
     	}
-    	
-    	//check bottom row
-    	int lastRowStart = (grid[grid.length-1][0].getY()*this.n) +1;
-    	for(int i=0; i<grid[grid.length-1].length; i++) {
-    		if(grid[grid.length-1][i].isOpenBlock()) {
-    			WQUFrep.union(N-1, lastRowStart+i);
-    		}
-    	}
+    	isPercolated = WQUFrep.find(0) == WQUFrep.find(N-1);	
+	
     	//TRAZA
     	//System.out.println("count(Graph): "+WQUFrep.count());
+    	return isPercolated;
+	    
     	
-    	return WQUFrep.find(0) == WQUFrep.find(N-1);
+    	
     }
 
     // test client (optional)
     public static void main(String[] args) {
-    	Percolation perc = new Percolation(3000);
+    	Percolation perc = new Percolation(3);
+    	
+    	//open some TEST 3*3
+//    	perc.open(0, 0);
+//    	perc.open(0, 1);
+//    	perc.open(1, 0);
+//    	perc.open(1, 2);
+//    	perc.open(2, 1);
+//    	perc.open(2, 2);
+    	
+    	//open some TEST 3*3
+//    	perc.open(0, 0);
+//    	perc.open(0, 1);
+//    	perc.open(0, 2);
+//    	perc.open(1, 0);
+//    	perc.open(1, 2);
+//    	perc.open(2, 1);
+//    	perc.open(2, 2);
     	
     	//open some TEST 3*3
     	perc.open(0, 0);
-    	perc.open(0, 1);
     	perc.open(1, 0);
+    	perc.open(1, 1);
     	perc.open(1, 2);
-    	perc.open(2, 1);
+    	perc.open(2, 0);
     	perc.open(2, 2);
     	
     	//open some TEST 2*2
 //    	perc.open(0, 0);
 //    	perc.open(1, 1);
+    	boolean percos = perc.percolates();
+    	
+    	
 
     	
-    	//perc.printGrid();
+    	perc.printGrid();
     	System.out.println();
     	System.out.println(perc.numberOfOpenSites());
-    	System.out.println(perc.percolates());
+    	System.out.println(percos);
     }
 
 }
