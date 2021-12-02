@@ -84,8 +84,12 @@ public class Percolation {
     	if(row == 0) {
     		WQUFrep.union(0, grid[row][col].getId());
     	}
+    	//BOT
+    	if(row==grid.length-1) {
+    		WQUFrep.union(N-1, grid[row][col].getId());
+    	}
     	//MID
-    	if(row>0 && row<grid.length) {
+    	if(row>=0 && row<grid.length) {
     		//getLeft
     		if(col-1>=0) { //Illegal argument left
 	    		if(grid[row][col-1].isOpenBlock()) {
@@ -95,7 +99,7 @@ public class Percolation {
 	    		}
     		}
     		//getRight
-    		if(col+1<grid[row].length-1) { //Illegal argument right
+    		if(col+1<=grid[row].length-1) { //Illegal argument right
     			if(grid[row][col+1].isOpenBlock()) {
     				int p = grid[row][col+1].getId();
     				int q = grid[row][col].getId();
@@ -111,7 +115,7 @@ public class Percolation {
     			}
     		}
     		//getDOWn
-    		if(row+1<grid.length-1) { //Illegal argument down
+    		if(row+1<=grid.length-1) { //Illegal argument down
     			if(grid[row+1][col].isOpenBlock()) {
     				int p = grid[row+1][col].getId();
     				int q = grid[row][col].getId();
@@ -119,10 +123,7 @@ public class Percolation {
     			}
     		}
     	}
-    	//BOT
-    	if(row==grid.length-1) {
-    		WQUFrep.union(N-1, grid[row][col].getId());
-    	}
+
     	//^^^^OPEN
 		grid[row][col].openBlock();
 		
@@ -155,50 +156,4 @@ public class Percolation {
     	//System.out.println("count(Graph): "+WQUFrep.count());
     	return WQUFrep.find(0) == WQUFrep.find(N-1);
     }
-
-    // test client (optional)
-    public static void main(String[] args) {
-    	Percolation perc = new Percolation(3);
-    	
-    	//open some TEST 3*3
-//    	perc.open(0, 0);
-//    	perc.open(0, 1);
-//    	perc.open(1, 0);
-//    	perc.open(1, 2);
-//    	perc.open(2, 1);
-//    	perc.open(2, 2);
-    	
-    	//open some TEST 3*3
-//    	perc.open(0, 0);
-//    	perc.open(0, 1);
-//    	perc.open(0, 2);
-//    	perc.open(1, 0);
-//    	perc.open(1, 2);
-//    	perc.open(2, 1);
-//    	perc.open(2, 2);
-    	
-    	//open some TEST 3*3
-    	perc.open(0, 0);
-    	perc.open(0, 1);
-    	perc.open(0, 2);
-    	perc.open(1, 0);
-    	perc.open(1, 1);
-    	perc.open(1, 2);
-//    	perc.open(2, 0);
-    	perc.open(2, 2);
-    	
-    	//open some TEST 2*2
-//    	perc.open(0, 0);
-//    	perc.open(1, 1);
-    	boolean percos = perc.percolates();
-    	
-    	
-
-    	
-    	perc.printGrid();
-    	System.out.println();
-    	System.out.println(perc.numberOfOpenSites());
-    	System.out.println(percos);
-    }
-
 }

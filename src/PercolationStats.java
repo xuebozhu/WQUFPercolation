@@ -1,25 +1,19 @@
-//TMP
-import java.util.concurrent.TimeUnit;
-
-
 import edu.princeton.cs.algs4.StdRandom;
 import edu.princeton.cs.algs4.StdStats;
 
 //Monte Carlo simulation
 
 public class PercolationStats {
+	
 	double[] trialsArray;
-	int N;
 
     // perform independent trials on an n-by-n grid
     public PercolationStats(int n, int trials) {
     	
-    	this.N = n*n;
-    	
 		trialsArray = new double[trials];
 		
 		//random not repetitive number
-		int[] arr = new int[this.N];
+		int[] arr = new int[n*n];
 	    for (int x = 0; x < arr.length; x++) {
 	        arr[x] = x;
 	    }
@@ -35,40 +29,41 @@ public class PercolationStats {
     	    StdRandom.shuffle(arr);
 
     	    boolean isPercolates = false;
-    	    int x = 0;
-	    	while(isPercolates==false && x<arr.length) { 
-    	    	int iSquareRand = arr[x] / n;
-    			int jSquareRand = arr[x] % n;	
+    	    int y = 0;
+	    	while(!isPercolates && y<arr.length) { 
+    	    	int iSquareRand = arr[y] / n;
+    			int jSquareRand = arr[y] % n;	
+    			
     			perc.open(iSquareRand, jSquareRand);
-    			
-    			//TRAZA
-    			try {
-					TimeUnit.MILLISECONDS.sleep(1000);
-				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-    			
+    			/*synchronized(perc) {
+    			    //do some code here
+    				
+    			}*/
+
     			
     			isPercolates=perc.percolates();
-    			x++;
+    			
     			//TRAZA
-    	    	perc.printGrid();
-    	    	System.out.println("Open: "+ perc.numberOfOpenSites());
-    	    	System.out.println("Percolates(true/false): "+isPercolates);
-    	    	System.out.println("-----------------------");
+//    	    	perc.printGrid();
+//    	    	System.out.println("VALOR de X: "+y);
+//    	    	System.out.println("Open: "+ perc.numberOfOpenSites());
+//    	    	System.out.println("Percolates(true/false): "+isPercolates);
+//    	    	System.out.println("-----------------------");
+    	    	y++;
     	    }
     		//TRAZA
 //	    	perc.printGrid();
     		totalOpen = perc.numberOfOpenSites();
-    		System.out.println("Total open: "+ totalOpen);
-    		System.out.println("Percolates(true/false): "+isPercolates);
+//    		System.out.println("Total open: "+ totalOpen);
+//    		System.out.println("Percolates(true/false): "+isPercolates);
     	
     	
 //	    	System.out.println("FINAL Total open: "+ totalOpen);
-	    	result = (double)totalOpen/N;
-	    	System.out.println("RESULT P: " + result);
+	    	result = (double)totalOpen/(n*n);
+//	    	System.out.println("RESULT P: " + result);
 	    	trialsArray[i] = result;
+	    	
+	    	perc = null;
     	}
     	
     }
@@ -108,12 +103,12 @@ public class PercolationStats {
    // test client (see below)
    public static void main(String[] args) {
 	   //TEST uniform distribution
-	   PercolationStats percStats = new PercolationStats(3,3);
+	   PercolationStats percStats = new PercolationStats(2,10000);
 	   double media = percStats.mean();
 	   double dev = percStats.stddev();
 	   System.out.println("------------------------");
-	   System.out.println("Media: "+media);
-	   System.out.println("Desv. Std: "+dev);
+	   System.out.println("mean                    = "+media);
+	   System.out.println("stddev                  = "+dev);
 	   System.out.println("95% confidence interval = ["+percStats.confidenceLo()+", "+percStats.confidenceHi()+"]");
    }
 

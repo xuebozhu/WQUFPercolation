@@ -1,0 +1,69 @@
+ -1 -1 -1
+ -1 -1 0
+ -1 -1 -1
+Percolates(true/false): false
+-----------------------
+ -1 -1 -1
+ -1 -1 0
+ 0 -1 -1
+Percolates(true/false): false
+-----------------------
+ -1 1 -1
+ -1 -1 0
+ 0 -1 -1
+Percolates(true/false): false
+-----------------------
+ -1 1 -1
+ -1 -1 0
+ 0 0 -1
+Percolates(true/false): false
+-----------------------
+Is evaluating before opening
+______________________-
+ -1 1 -1
+ -1 0 0
+ 0 0 -1
+Percolates(true/false): false
+-----------------------
+ 1 1 -1
+ -1 1 1
+ 0 1 -1
+Percolates(true/false): false
+-----------------------
+ 1 1 1
+ -1 1 1
+ 0 1 -1
+Percolates(true/false): false
+-----------------------
+ 1 1 1
+ -1 1 1
+ 0 1 0
+Percolates(true/false): false
+-----------------------
+ 1 1 1
+ 0 1 1
+ 0 1 0
+Percolates(true/false): false
+-----------------------
+Total open: 9
+Percolates(true/false): false
+RESULT P: 1.0
+
+_____________________________________________________
+_____________________________________________________
+
+-----------------------
+ 1 -1 -1
+ 0 0 0
+ 0 -1 0
+Open: 6
+Percolates(true/false): false
+-----------------------
+ 1 -1 1
+ 1 1 1
+ 1 -1 1
+Open: 7
+Percolates(true/false): true
+-----------------------
+With a TimeUnit.MILLISECONDS.sleep(500); we get closer...
+__________________________________________________________
