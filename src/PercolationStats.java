@@ -103,12 +103,22 @@ public class PercolationStats {
    // test client (see below)
    public static void main(String[] args) {
 	   //TEST uniform distribution
-	   PercolationStats percStats = new PercolationStats(200,100);
-	   double media = percStats.mean();
-	   double dev = percStats.stddev();
-	   System.out.println("mean                    = "+media);
-	   System.out.println("stddev                  = "+dev);
-	   System.out.println("95% confidence interval = ["+percStats.confidenceLo()+", "+percStats.confidenceHi()+"]");
+	   try {
+		   int n1 = Integer.valueOf(args[0]);
+		   int ntrials = Integer.valueOf(args[1]);
+		   
+		   if(n1 <= 0 || ntrials <= 0)
+			   throw new IllegalArgumentException();
+		   
+		   PercolationStats percStats = new PercolationStats(n1,ntrials);
+		   double media = percStats.mean();
+		   double dev = percStats.stddev();
+		   System.out.println("mean                    = "+media);
+		   System.out.println("stddev                  = "+dev);
+		   System.out.println("95% confidence interval = ["+percStats.confidenceLo()+", "+percStats.confidenceHi()+"]");
+		   
+	   }catch (NumberFormatException ex){
+           ex.printStackTrace();
+       }
    }
-
 }

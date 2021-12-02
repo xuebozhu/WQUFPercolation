@@ -16,10 +16,10 @@ public class Percolation {
 			this.y = y;
 			this.id = (n * y) + (x+1); // starts in 0
 		}
-		public int getId() {
+		int getId() {
 			return this.id;
 		}
-		public int getState() {
+		int getState() {
 			return this.state;
 		}
 		void fill() {
