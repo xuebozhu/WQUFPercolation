@@ -103,10 +103,9 @@ public class PercolationStats {
    // test client (see below)
    public static void main(String[] args) {
 	   //TEST uniform distribution
-	   PercolationStats percStats = new PercolationStats(2,10000);
+	   PercolationStats percStats = new PercolationStats(200,100);
 	   double media = percStats.mean();
 	   double dev = percStats.stddev();
-	   System.out.println("------------------------");
 	   System.out.println("mean                    = "+media);
 	   System.out.println("stddev                  = "+dev);
 	   System.out.println("95% confidence interval = ["+percStats.confidenceLo()+", "+percStats.confidenceHi()+"]");
