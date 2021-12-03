@@ -67,6 +67,8 @@ public class Percolation {
 
 		int gridRow = row - 1;
 		int gridCol = col - 1;
+		
+		grid[gridRow][gridCol].openBlock();
 
 		// TOP
 		if (gridRow == 0) {
@@ -76,6 +78,7 @@ public class Percolation {
 		// BOT
 		if (gridRow == grid.length - 1) {
 			WQUFrep.union(N - 1, grid[gridRow][gridCol].getId());
+			grid[gridRow][gridCol].openBlock();
 		}
 		// MID
 		if (gridRow >= 0 && gridRow < grid.length) {
@@ -207,11 +210,11 @@ public class Percolation {
 //    	perc.open(2, 2);
 
     	//open some TEST 3*3
-    	perc.open(1, 1);
-    	perc.open(1, 2);
+//    	perc.open(1, 1);
+//    	perc.open(1, 2);
     	perc.open(1, 3);
     	perc.open(2, 1);
-    	perc.open(2, 2);
+//    	perc.open(2, 2);
     	perc.open(2, 3);
 //    	perc.open(2, 0);
     	perc.open(3, 3);
