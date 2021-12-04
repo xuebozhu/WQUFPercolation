@@ -4,37 +4,29 @@ public class Percolation {
 	private class Square {
 		// -1= blocked
 		// 0 = open
-		// 1 = full
+		
 		int state;
 		int id;
-
+		
 		public Square(int state, int x, int y) {
 			this.state = state;
 			this.id = (n * y) + (x + 1); // starts in 0
 		}
+		
 
 		int getId() {
 			return this.id;
 		}
-
-		int getState() {
-			return this.state;
-		}
+		
+		int getState() { return this.state; }
+		 
 
 		void openBlock() {
 			this.state = 0;
 		}
 
-		void fillBlock() {
-			this.state = 1;
-		}
-
 		boolean isOpenBlock() {
 			return this.state == 0 || this.state == 1;
-		}
-
-		boolean onlyOpenBlock() {
-			return this.state == 0;
 		}
 
 		boolean isFullBlock() {
@@ -53,6 +45,10 @@ public class Percolation {
 
 	// creates n-by-n grid, with all sites initially blocked
 	public Percolation(int n) {
+		
+		if (n <= 0)
+			throw new IllegalArgumentException("Value not valid");
+		
 		// grid Creation
 		this.n = n;
 		grid = new Square[n][n];
@@ -75,19 +71,19 @@ public class Percolation {
 
 		int gridRow = row - 1;
 		int gridCol = col - 1;
+		
+		if ((gridRow < 0 || gridRow >= grid.length) || (gridCol < 0 || gridCol >= grid[0].length))
+			throw new IllegalArgumentException("Value not valid");
 
 		if (grid[gridRow][gridCol].isBlockedBlock()) {
 			grid[gridRow][gridCol].openBlock();
 		}
-
-		// Check if Is Filled
-		boolean thisIsFilled = false;
+		
+		int q = grid[gridRow][gridCol].getId();
 
 		// TOP
 		if (gridRow == 0) {
 			WQUFrep.union(0, grid[gridRow][gridCol].getId());
-			grid[gridRow][gridCol].fillBlock();
-			thisIsFilled = true;
 		}
 		// BOT
 		if (gridRow == grid.length - 1) {
@@ -99,159 +95,30 @@ public class Percolation {
 			if (gridCol - 1 >= 0) { // Illegal argument left
 				if (grid[gridRow][gridCol - 1].isOpenBlock()) {
 					int p = grid[gridRow][gridCol - 1].getId();
-					int q = grid[gridRow][gridCol].getId();
 					WQUFrep.union(p, q); // Revisar
-
-					// Full checking
-					if (grid[gridRow][gridCol - 1].isFullBlock() || thisIsFilled) {
-						grid[gridRow][gridCol].fillBlock();
-						thisIsFilled = true;
-
-						// FILLING NEXT TO - UP, RIGHT, DOWN
-						if (gridRow - 1 >= 0) {
-							if (grid[gridRow - 1][gridCol].onlyOpenBlock()) {
-								grid[gridRow - 1][gridCol].fillBlock();
-							}
-						}
-						if (gridCol + 1 <= grid[gridRow].length - 1) {
-							if (grid[gridRow][gridCol + 1].onlyOpenBlock()) {
-								grid[gridRow][gridCol + 1].fillBlock();
-							}
-						}
-						if (gridRow + 1 <= grid.length - 1) {
-							if (grid[gridRow + 1][gridCol].onlyOpenBlock()) {
-								grid[gridRow + 1][gridCol].fillBlock();
-							}
-						}
-						if (gridCol - 1 >= 0) {
-							if (grid[gridRow][gridCol - 1].onlyOpenBlock()) {
-								grid[gridRow][gridCol - 1].fillBlock();
-							}
-						}
-
-					}
 				}
 			}
 			// getRight
 			if (gridCol + 1 <= grid[gridRow].length - 1) { // Illegal argument right
 				if (grid[gridRow][gridCol + 1].isOpenBlock()) {
 					int p = grid[gridRow][gridCol + 1].getId();
-					int q = grid[gridRow][gridCol].getId();
 					WQUFrep.union(p, q); // Revisar
-
-					// Full checking
-					if (grid[gridRow][gridCol + 1].isFullBlock() || thisIsFilled) {
-						grid[gridRow][gridCol].fillBlock();
-						thisIsFilled = true;
-
-						// FILLING NEXT TO - UP, LEFT, DOWN
-						if (gridRow - 1 >= 0) {
-							if (grid[gridRow - 1][gridCol].onlyOpenBlock()) {
-								grid[gridRow - 1][gridCol].fillBlock();
-							}
-						}
-						if (gridCol - 1 >= 0) {
-							if (grid[gridRow][gridCol - 1].onlyOpenBlock()) {
-								grid[gridRow][gridCol - 1].fillBlock();
-							}
-						}
-						if (gridRow + 1 <= grid.length - 1) {
-							if (grid[gridRow + 1][gridCol].onlyOpenBlock()) {
-								grid[gridRow + 1][gridCol].fillBlock();
-							}
-						}
-						if (gridCol + 1 <= grid[gridRow].length - 1) {
-							if (grid[gridRow][gridCol + 1].onlyOpenBlock()) {
-								grid[gridRow][gridCol + 1].fillBlock();
-							}
-						}
-					}
-
 				}
 			}
 			// getUP
 			if (gridRow - 1 >= 0) { // Illegal argument up
 				if (grid[gridRow - 1][gridCol].isOpenBlock()) {
 					int p = grid[gridRow - 1][gridCol].getId();
-					int q = grid[gridRow][gridCol].getId();
 					WQUFrep.union(p, q); // Revisar
-
-					// Full checking
-					if (grid[gridRow - 1][gridCol].isFullBlock() || thisIsFilled) {
-						grid[gridRow][gridCol].fillBlock();
-						thisIsFilled = true;
-
-						// FILLING NEXT TO - left, RIGHT, DOWN
-						if (gridCol - 1 >= 0) {
-							if (grid[gridRow][gridCol - 1].onlyOpenBlock()) {
-								grid[gridRow][gridCol - 1].fillBlock();
-							}
-						}
-						if (gridCol + 1 <= grid[gridRow].length - 1) {
-							if (grid[gridRow][gridCol + 1].onlyOpenBlock()) {
-								grid[gridRow][gridCol + 1].fillBlock();
-							}
-						}
-						if (gridRow + 1 <= grid.length - 1) {
-							if (grid[gridRow + 1][gridCol].onlyOpenBlock()) {
-								grid[gridRow + 1][gridCol].fillBlock();
-							}
-						}
-						if (gridRow - 1 >= 0) {
-							if (grid[gridRow - 1][gridCol].onlyOpenBlock()) {
-								grid[gridRow - 1][gridCol].fillBlock();
-							}
-						}
-					}
 				}
 			}
 			// getDOWn
 			if (gridRow + 1 <= grid.length - 1) { // Illegal argument down
 				if (grid[gridRow + 1][gridCol].isOpenBlock()) {
 					int p = grid[gridRow + 1][gridCol].getId();
-					int q = grid[gridRow][gridCol].getId();
 					WQUFrep.union(p, q); // Revisar
-
-					// Full checking
-					if (grid[gridRow + 1][gridCol].isFullBlock() || thisIsFilled) {
-						grid[gridRow][gridCol].fillBlock();
-						thisIsFilled = true;
-
-						// FILLING NEXT TO - left, RIGHT, up
-						if (gridCol - 1 >= 0) {
-							if (grid[gridRow][gridCol - 1].onlyOpenBlock()) {
-								grid[gridRow][gridCol - 1].fillBlock();
-							}
-						}
-						if (gridCol + 1 <= grid[gridRow].length - 1) {
-							if (grid[gridRow][gridCol + 1].onlyOpenBlock()) {
-								grid[gridRow][gridCol + 1].fillBlock();
-							}
-						}
-						if (gridRow - 1 >= 0) {
-							if (grid[gridRow - 1][gridCol].onlyOpenBlock()) {
-								grid[gridRow - 1][gridCol].fillBlock();
-							}
-						}
-						if (gridRow + 1 <= grid.length - 1) {
-							if (grid[gridRow + 1][gridCol].onlyOpenBlock()) {
-								grid[gridRow + 1][gridCol].fillBlock();
-							}
-						}
-					}
 				}
 			}
-		}
-
-	}
-
-	// print grid - BORRAR
-	private void printGrid() {
-		for (int i = 0; i < grid.length; i++) {
-			for (int j = 0; j < grid[i].length; j++) {
-				System.out.print(" " + grid[i][j].getState());
-			}
-			System.out.println();
 		}
 	}
 
@@ -269,10 +136,12 @@ public class Percolation {
 	public boolean isFull(int row, int col) {
 		int gridRow = row - 1;
 		int gridCol = col - 1;
+		
+		int q = grid[gridRow][gridCol].getId();
 
 		if ((gridRow < 0 || gridRow >= grid.length) || (gridCol < 0 || gridCol >= grid[0].length))
 			throw new IllegalArgumentException("Value not valid");
-		return grid[gridRow][gridCol].isFullBlock();
+		return WQUFrep.find(0) == WQUFrep.find(q);
 	}
 
 	// returns the number of open sites
@@ -290,50 +159,5 @@ public class Percolation {
 	// does the system percolate?
 	public boolean percolates() {
 		return WQUFrep.find(0) == WQUFrep.find(N - 1);
-	}
-
-	public static void main(String[] args) {
-		Percolation perc = new Percolation(3);
-
-		// open some TEST 3*3
-		// perc.open(0, 0);
-		// perc.open(0, 1);
-		// perc.open(1, 0);
-		// perc.open(1, 2);
-		// perc.open(2, 1);
-		// perc.open(2, 2);
-
-		// open some TEST 3*3
-		// perc.open(0, 0);
-		// perc.open(0, 1);
-		// perc.open(0, 2);
-		// perc.open(1, 0);
-		// perc.open(1, 2);
-		// perc.open(2, 1);
-		// perc.open(2, 2);
-
-		// open some TEST 3*3
-		// perc.open(1, 1);
-		// perc.open(1, 2);
-		perc.open(1, 3);
-		perc.open(2, 1);
-		// perc.open(2, 2);
-		perc.open(2, 3);
-		// perc.open(2, 0);
-		perc.open(3, 3);
-
-		// open some TEST 2*2
-		// perc.open(0, 0);
-		// perc.open(1, 1);
-		boolean percos = perc.percolates();
-		// TMP DEBUGGING
-		perc.open(1, 1);
-		perc.printGrid();
-		perc = new Percolation(3);
-		// ****Finish debug*******
-
-		System.out.println();
-		System.out.println(perc.numberOfOpenSites());
-		System.out.println(percos);
 	}
 }

@@ -34,7 +34,7 @@ public class PercolationStats {
 				int iSquareRand = arr[y] / n;
 				int jSquareRand = arr[y] % n;
 
-				perc.open(iSquareRand+1, jSquareRand+1);
+				perc.open(iSquareRand + 1, jSquareRand + 1);
 
 				isPercolates = perc.percolates();
 				y++;
